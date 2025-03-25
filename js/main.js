@@ -53,6 +53,42 @@ function cameraEvent() {
         // updateGEsDisplay()
     }
 
+    // touch events
+
+    app.addEventListener("touchstart", function (event) {
+        let x = event.touches[0].clientX; // event.client doesnt exist for touch so this is put into a variable to do the same thing but for touch events
+        let y = event.touches[0].clientY; // same here
+
+        isDragging = true;
+        offset.x = x - body.offsetLeft - camera_pos.x;
+        offset.y = y - body.offsetTop - camera_pos.y;
+    });
+
+    document.addEventListener("touchmove", function (event) {
+        let x = event.touches[0].clientX; // same here
+        let y = event.touches[0].clientY; // same here
+
+        if (isDragging && !tmp.the_end) {
+            if (camera_lerp.active) {
+                offset.x = x - body.offsetLeft - camera_pos.x;
+                offset.y = y - body.offsetTop - camera_pos.y;
+                return
+            }
+
+            camera_pos.x = x - offset.x;
+            camera_pos.y = y - offset.y;
+
+            updatePosition()
+            drawCanvas()
+        }
+    });
+
+    document.addEventListener("touchend", function () {
+        if (!tmp.the_end) isDragging = false;
+    });
+
+    //touch events end
+
     app.addEventListener("mousedown", function (event) {
         isDragging = true;
         offset.x = event.clientX - body.offsetLeft - camera_pos.x;
